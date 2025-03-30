@@ -1,0 +1,41 @@
+div {
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    background-color: #175e3d;
+    color: #c3b3d1;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    width: 100%;
+    min-width: 30rem;
+    text-align: left;
+  }
+  
+  button:hover,
+  button:active,
+  .active {
+    background-color: #8bddb4;
+    color: #194d30;
+  }
+  
+  img {
+    width: 5rem;
+    object-fit: contain;
+    border-radius: 50%;
+    box-shadow: 0 1px 8px rgba(41, 87, 44, 0.3);
+  }
+  
+  span {
+    margin: 0;
+    padding: 0;
+    font-size: 0.8rem;
+    font-weight: normal;
+  }

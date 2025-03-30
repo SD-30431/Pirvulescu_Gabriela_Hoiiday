@@ -1,0 +1,62 @@
+header {
+  display: flex;
+  justify-content: space-between; /* Align items with space between them */
+  align-items: center; /* Vertically align items in the center */
+  gap: 1rem;
+  width: 90%;
+  max-width: 50rem;
+  margin: 0 auto 2rem auto;
+  text-align: center;
+  background: linear-gradient(to bottom, #2c0a4c, #450d80);
+  padding: 1rem;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
+header > div {
+  display: flex;
+  align-items: center; /* Align h1 and button vertically */
+  gap: 1rem; /* Adjust gap between h1 and button */
+}
+
+img {
+  width: 3.5rem;
+  object-fit: contain;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.login-button {
+  background-color: #8bddb4;
+  color: #194d30;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.login-button:hover {
+  background-color: #a0e0c8;
+}
+
+@media (min-width: 768px) {
+  header {
+    padding: 2rem;
+  }
+
+  img {
+    width: 4.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+}

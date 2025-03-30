@@ -1,0 +1,9 @@
+<header>
+    <img src="../../../assets/hoiiday_logo.png" alt="Vacay with us" />
+    <div>
+        <h1>Hoiiday</h1>
+        <button class="login-button" (click)="openLogin()">Log In</button>
+    </div>
+</header>
+
+<app-login *ngIf="showLogin" (close)="closeLogin()"></app-login>

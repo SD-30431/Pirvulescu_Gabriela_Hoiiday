@@ -1,0 +1,23 @@
+<div class="login-modal">
+    <div class="login-content" (click)="$event.stopPropagation()">
+      <div class="login-header">
+        <img src="assets/login-icon.png" alt="Login Icon" class="login-icon">
+        <h2>SIGN IN</h2>
+      </div>
+      <div class="login-form">
+        <input type="email" placeholder="Email" class="login-input" [(ngModel)]="email">
+        <input type="password" placeholder="Password" class="login-input" [(ngModel)]="password">
+        <button class="login-button" (click)="login()">LOGIN</button>
+      </div>
+      <div class="login-options">
+        <label>
+          <input type="checkbox" class="login-checkbox" [(ngModel)]="rememberMe"> Remember me
+        </label>
+        <a href="#" class="forgot-password">Forgot password?</a>
+      </div>
+      <div class="signup-link">
+        <span>Don't have an account?</span>
+        <a href="#" class="signup-underline">Sign up</a>
+      </div>
+    </div>
+  </div>

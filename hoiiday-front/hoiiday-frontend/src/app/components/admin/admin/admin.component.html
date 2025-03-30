@@ -1,0 +1,25 @@
+<div class="admin-container">
+    <div class="admin-header">
+        <h2>Admin Dashboard - Client List</h2>
+    </div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+    <div class="user-list">
+        <div *ngIf="clients.length > 0; else noClients">
+            <ul>
+                <li *ngFor="let client of clients">
+                    <button>
+                        <img src="src/app/assets/hoiiday_logo.png" alt="Client Image" />
+                        <span>{{ client.firstName }} {{ client.lastName }}</span>
+                    </button>
+                    <button (click)="deleteClient(client.userId)">Delete</button>
+                    <script>
+                        console.log(client)
+                    </script>
+                </li>
+            </ul>
+        </div>
+        <ng-template #noClients>
+            <p>No clients found.</p>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+<div *ngIf="users.length > 0; else noUsers">
+  <ul>
+    <li *ngFor="let user of users">
+      <button>
+        <img src="src/app/assets/hoiiday_logo.png" alt="User Image" />
+        <span>{{ user.firstName }} {{ user.lastName }}</span>
+      </button>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noUsers>
+  <p>No users found.</p>
+</ng-template>
