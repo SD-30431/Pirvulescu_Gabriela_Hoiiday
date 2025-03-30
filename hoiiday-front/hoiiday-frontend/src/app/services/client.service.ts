@@ -19,8 +19,12 @@ export class ClientService{
         return this.userService.deleteUser(userId);
     }
 
-    // updateClient(user: User): Observable<User>{
-    //     return this.userService.updateUser(user);
-    // }
+    updateClient(user: User): Observable<User>{
+        return this.userService.updateUser(user);
+    }
+
+    createClient(user: User): Observable<User>{
+        return this.userService.createUser(user);
+    }
 }
 

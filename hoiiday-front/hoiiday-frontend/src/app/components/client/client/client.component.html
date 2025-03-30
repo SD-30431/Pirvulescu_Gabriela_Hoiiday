@@ -1,1 +1,2 @@
-<p>Welcome, Client!</p>
+<p *ngIf="firstName && lastName">Welcome, {{ firstName }} {{ lastName }}!</p>
+<p *ngIf="!firstName || !lastName">Welcome, Client!</p>

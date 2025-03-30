@@ -1,9 +1,14 @@
 <header>
     <img src="../../../assets/hoiiday_logo.png" alt="Vacay with us" />
     <div>
-        <h1>Hoiiday</h1>
+      <h1>Hoiiday</h1>
+      <ng-container *ngIf="!isLoggedIn; else userDetails">
         <button class="login-button" (click)="openLogin()">Log In</button>
+      </ng-container>
+      <ng-template #userDetails>
+        <span>{{ firstName }} {{ lastName }}</span>
+      </ng-template>
     </div>
-</header>
-
-<app-login *ngIf="showLogin" (close)="closeLogin()"></app-login>
+  </header>
+  
+  <app-login *ngIf="showLogin" (close)="closeLogin()"></app-login>
