@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoginComponent } from '../../login/login.component';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,23 +9,13 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   showLogin = false;
   isLoggedIn = false;
   firstName: string | null = null;
   lastName: string | null = null;
 
-  constructor(private authService: AuthService) {}
-
-  ngOnInit(): void {
-    this.authService.isAuthenticated().subscribe((loggedIn: boolean) => {
-      this.isLoggedIn = loggedIn;
-      if (this.isLoggedIn) {
-        this.firstName = this.authService.getFirstName();
-        this.lastName = this.authService.getLastName();
-      }
-    });
-  }
+  constructor() {}
 
   openLogin(): void {
     this.showLogin = true;
@@ -34,5 +23,17 @@ export class NavbarComponent implements OnInit {
 
   closeLogin(): void {
     this.showLogin = false;
+  }
+
+  setUserInfo(firstName: string, lastName: string): void {
+    this.isLoggedIn = true;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  logout(): void {
+    this.isLoggedIn = false;
+    this.firstName = null;
+    this.lastName = null;
   }
 }

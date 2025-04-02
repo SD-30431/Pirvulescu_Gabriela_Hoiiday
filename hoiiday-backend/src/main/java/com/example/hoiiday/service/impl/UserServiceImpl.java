@@ -46,9 +46,6 @@
             return UserMapper.mapToUserDTO(savedUser);
         }
 
-
-
-
         @Override
         public Set<UserDTO> getAllUsers() {
             Set<User> users = userRepository.findAll().stream().collect(Collectors.toSet());
