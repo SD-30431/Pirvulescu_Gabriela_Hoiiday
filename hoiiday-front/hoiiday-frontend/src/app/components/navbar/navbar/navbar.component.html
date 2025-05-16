@@ -1,14 +1,33 @@
-<header>
-    <img src="../../../assets/hoiiday_logo.png" alt="Vacay with us" />
-    <div>
+<header class="navbar">
+  <div class="container">
+    <div class="logo-container">
+      <img src="../../../assets/hoiiday_logo.png" alt="Hoiiday Logo" />
       <h1>Hoiiday</h1>
+    </div>
+
+    <div class="nav-links">
+      <a routerLink="/client">Properties</a>
+      <a routerLink="/attractions">Attractions</a>
+      <a routerLink="/popular">Popular</a>
+    </div>
+
+    <div class="nav-actions">
       <ng-container *ngIf="!isLoggedIn; else userDetails">
         <button class="login-button" (click)="openLogin()">Log In</button>
       </ng-container>
       <ng-template #userDetails>
-        <span>{{ firstName }} {{ lastName }}</span>
+        <div class="user-info">
+          <span>{{ firstName }} {{ lastName }}</span>
+          <button class="logout-button" (click)="logout()">Logout</button>
+        </div>
       </ng-template>
     </div>
-  </header>
-  
-  <app-login *ngIf="showLogin" (close)="closeLogin()"></app-login>
+  </div>
+
+  <!-- render your login component as a modal/popup -->
+  <app-login
+    *ngIf="showLogin"
+    (close)="closeLogin()"
+    (loginSuccess)="setUserInfo($event.firstName, $event.lastName)">
+  </app-login>
+</header>

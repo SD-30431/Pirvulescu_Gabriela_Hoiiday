@@ -1,39 +1,38 @@
 import { Component } from '@angular/core';
-import { LoginComponent } from '../../login/login.component';
 import { CommonModule } from '@angular/common';
+import { LoginComponent } from '../../login/login.component';
+import { Router }       from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [LoginComponent, CommonModule],
+  imports: [CommonModule, LoginComponent],   
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],   
 })
 export class NavbarComponent {
-  showLogin = false;
-  isLoggedIn = false;
+  showLogin   = false;
+  isLoggedIn  = false;
   firstName: string | null = null;
-  lastName: string | null = null;
+  lastName:  string | null = null;
 
-  constructor() {}
+  constructor(private router:Router){}
 
-  openLogin(): void {
-    this.showLogin = true;
-  }
+  openLogin()  { this.showLogin = true; }
+  closeLogin() { this.showLogin = false; }
 
-  closeLogin(): void {
-    this.showLogin = false;
-  }
-
-  setUserInfo(firstName: string, lastName: string): void {
+  setUserInfo(fn: string, ln: string) {
     this.isLoggedIn = true;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.firstName  = fn;
+    this.lastName   = ln;
+    this.showLogin  = false;
   }
 
-  logout(): void {
+  logout() {
     this.isLoggedIn = false;
-    this.firstName = null;
-    this.lastName = null;
+    this.firstName  = null;
+    this.lastName   = null;
+
+    this.router.navigate(['/client']);
   }
 }

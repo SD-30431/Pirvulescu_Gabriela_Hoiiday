@@ -5,11 +5,12 @@
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "strict": true,
+      "noEmitOnError": false,      // ← still emit JS even if you have errors
+   "skipLibCheck": true, 
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

@@ -1,1 +1,142 @@
-<p>Welcome, Client</p>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Book your stay with Hoiiday</h1>
+    <p>1,450,000 rooms around the world are waiting for you!</p>
+    
+    <!-- Search Form -->
+    <div class="search-container">
+      <div class="search-form">
+        <div class="search-input">
+          <label>Location</label>
+          <input type="text" placeholder="Where are you going?" [(ngModel)]="location">
+        </div>
+        <div class="search-input">
+          <label>Check-in</label>
+          <input type="date" [(ngModel)]="checkInDate">
+        </div>
+        <div class="search-input">
+          <label>Check-out</label>
+          <input type="date" [(ngModel)]="checkOutDate">
+        </div>
+        <div class="search-input">
+          <label>Guests</label>
+          <input type="number" [(ngModel)]="guestCount" min="1">
+        </div>
+        <button class="search-button" (click)="searchProperties()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Container with Properties and Filters -->
+<div class="main-container">
+  <div class="content-container">
+    <!-- Left Sidebar with Filters -->
+    <aside class="filters-sidebar" [class.show-filters]="showFilters">
+      <div class="filters-header">
+        <h3>Filter Properties</h3>
+        <button class="close-filters" (click)="toggleFilters()">×</button>
+      </div>
+      
+      <div class="filter-group">
+        <h4>Amenities</h4>
+        <div class="checkbox-group">
+          <div class="filter-option">
+            <label><input type="checkbox" [(ngModel)]="filters.amenities.pool"> Pool</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="checkbox" [(ngModel)]="filters.amenities.wifi"> WiFi</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="checkbox" [(ngModel)]="filters.amenities.petFriendly"> Pet Friendly</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="checkbox" [(ngModel)]="filters.amenities.seaView"> Sea View</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="checkbox" [(ngModel)]="filters.amenities.parking"> Parking</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Guests</h4>
+        <div class="input-group">
+          <label for="guestCountFilter">Number of Guests:</label>
+          <input type="number" id="guestCountFilter" [(ngModel)]="filters.guestCount" min="1">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Rating</h4>
+        <div class="radio-group">
+          <div class="filter-option">
+            <label><input type="radio" name="rating" [value]="0" [(ngModel)]="filters.rating"> Any</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="radio" name="rating" [value]="9" [(ngModel)]="filters.rating"> 9+</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="radio" name="rating" [value]="8" [(ngModel)]="filters.rating"> 8+</label>
+          </div>
+          <div class="filter-option">
+            <label><input type="radio" name="rating" [value]="7" [(ngModel)]="filters.rating"> 7+</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-apply" (click)="applyFilters()">Apply Filters</button>
+        <button class="btn-reset" (click)="resetFilters()">Reset</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Filter Toggle for Mobile -->
+      <button class="filter-toggle-mobile" (click)="toggleFilters()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        Filters
+      </button>
+      
+      <!-- Loading and Error Messages -->
+      <div *ngIf="loading" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading properties...</p>
+      </div>
+      
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <section class="property-listings" *ngIf="!loading && !errorMessage">
+        <div class="property-grid">
+          <div *ngFor="let property of filteredProperties" class="property-card">
+            <div class="property-image">
+              <img [src]="(property.imageUrls?.[0]) ?? '/assets/images/placeholder.jpg'" [alt]="property.name">
+            </div>
+            <div class="property-details">
+              <h3>{{ property.name }}</h3>
+              <p class="property-location">{{ property.location.city }}, {{ property.location.country }}</p>
+              <p class="property-description">{{ property.description | slice:0:100 }}...</p>
+              <div class="property-actions">
+                <button class="btn-view" (click)="viewPropertyDetails(property.propertyId)">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </section>
+
+        <div *ngIf="filteredProperties.length === 0" class="no-results">
+          <p>No properties match your search criteria. Try adjusting your filters.</p>
+        </div>
+    </main>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<app-login *ngIf="showLoginModal" (close)="closeLoginModal()" (loginSuccess)="onLoginSuccess()"></app-login>

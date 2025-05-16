@@ -6,6 +6,7 @@
     import com.example.hoiiday.model.User;
     import com.example.hoiiday.repository.AdminRepository;
     import com.example.hoiiday.repository.UserRepository;
+    import com.example.hoiiday.service.EmailService;
     import com.example.hoiiday.service.UserService;
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
@@ -22,11 +23,13 @@
         private final AdminRepository adminRepository;
         private final PasswordEncoder passwordEncoder;
         private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+        private final EmailService emailService;
 
-        public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
+        public UserServiceImpl(UserRepository userRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
             this.userRepository = userRepository;
             this.adminRepository = adminRepository;
             this.passwordEncoder = passwordEncoder;
+            this.emailService = emailService;
         }
 
         @Override
@@ -34,7 +37,11 @@
             User user = UserMapper.mapToUser(userDTO);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = userRepository.save(user);
-
+            String subject = "Welcome to Our Platform!";
+            String body = "Dear " + savedUser.getFirstName() + ",\n\n" +
+                            "Thank you for signing up for our platform!\n\n" +
+                            "We're excited to have you on board.";
+            emailService.sendSimpleEmail(savedUser.getEmail(), subject, body);
             if ("ADMIN".equalsIgnoreCase(userDTO.getRole().name())) {
                 Admin admin = new Admin();
                 admin.setUser(savedUser);
@@ -62,6 +69,12 @@
         }
 
         @Override
+        public User getUserEntityById(Long userId) {
+            return userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        }
+
+        @Override
         public UserDTO updateUser(Long userId, UserDTO userDTO) {
             User userToUpdate = userRepository.findById(userId)
                     .orElseThrow(()-> new RuntimeException("User doesn't exist"));
@@ -84,6 +97,11 @@
         public User findUserByEmail(String email){
             logger.info("Searching for user with email: {}", email);
             return userRepository.findByEmail(email).orElse(null);
+        }
+
+        @Override
+        public User save(User user) {
+            return userRepository.save(user);
         }
 
     }

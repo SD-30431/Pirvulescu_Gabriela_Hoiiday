@@ -8,6 +8,7 @@ import com.example.hoiiday.model.enums.UserRole;
 import com.example.hoiiday.repository.AdminRepository;
 import com.example.hoiiday.repository.UserRepository;
 import com.example.hoiiday.service.UserService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,7 +64,7 @@ public class UserServiceImplTest{
     }
 
     @Test
-    void createUser_shouldReturnUserDTO() {
+    void createUser_shouldReturnUserDTO() throws MessagingException {
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 

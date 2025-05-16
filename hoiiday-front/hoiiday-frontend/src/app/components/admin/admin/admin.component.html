@@ -1,73 +1,274 @@
 <div class="admin-container">
-    <div class="admin-header">
-      <h2>Admin Dashboard - Client List</h2>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Holiday Logo" />
+      <h2>Holiday</h2>
     </div>
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-  
-    <button type="button" (click)="openCreateModal()">Create User</button>
-  
-    <div class="user-list">
-      <div *ngIf="clients.length > 0; else noClients">
-        <ul>
-          <li *ngFor="let client of clients">
-            <button>
-              <img src="src/app/assets/hoiiday_logo.png" alt="Client Image" />
-              <span>{{ client.firstName }} {{ client.lastName }}</span>
-            </button>
-            <button (click)="deleteClient(client.userId)">Delete</button>
-            <button (click)="openUpdateModal(client)">Update</button>
-          </li>
-        </ul>
+    <nav class="nav-menu">
+      <a class="nav-item active">
+        <i class="fas fa-users"></i>
+        <span>Clients</span>
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-building"></i>
+        <span>Properties</span>
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Bookings</span>
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Analytics</span>
+      </a>
+      <a class="nav-item">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <div class="user-menu">
+        <div class="notifications">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </div>
+        <div class="admin-profile">
+          <img src="assets/admin-avatar.png" alt="Admin" />
+          <span>Admin</span>
+        </div>
       </div>
-      <ng-template #noClients>
-        <p>No clients found.</p>
-      </ng-template>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <div class="page-header">
+        <h1>Client Management</h1>
+        <button class="btn-primary" (click)="openCreateModal()">
+          <i class="fas fa-plus"></i> Add New Client
+        </button>
+      </div>
+
+      <!-- Alert for messages -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Client List -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Client List</h2>
+          <div class="card-actions">
+            <div class="search-field">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search clients..." (input)="searchClients($event)" />
+            </div>
+            <div class="view-options">
+              <button 
+                class="btn-icon" 
+                [class.active]="viewMode === 'card'" 
+                (click)="setViewMode('card')" 
+                title="Card View">
+                <i class="fas fa-th-large"></i>
+              </button>
+              <button 
+                class="btn-icon" 
+                [class.active]="viewMode === 'list'" 
+                (click)="setViewMode('list')" 
+                title="List View">
+                <i class="fas fa-list"></i>
+              </button>
+            </div>
+            <div class="filter-dropdown">
+              <button class="btn-outline">
+                <i class="fas fa-filter"></i> Filter
+              </button>
+            </div>
+            <div class="sort-dropdown">
+              <button class="btn-outline" (click)="sortClientsAlphabetically()">
+                <i class="fas fa-sort"></i> 
+                Sort {{ sortDirection === 'asc' ? '(A-Z)' : '(Z-A)' }}
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-content">
+          <div *ngIf="viewMode === 'list'" class="table-responsive">
+            <table *ngIf="clients.length > 0; else noClients">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let client of clients">
+                  <td class="client-info">
+                    <div class="client-avatar">{{ client.firstName.charAt(0) }}{{ client.lastName.charAt(0) }}</div>
+                    <div>
+                      <span class="client-name">{{ client.firstName }} {{ client.lastName }}</span>
+                      <span class="client-id">ID: {{ client.userId }}</span>
+                    </div>
+                  </td>
+                  <td>{{ client.email }}</td>
+                  <td>{{ client.phoneNumber }}</td>
+                  <td>{{ client.lastLoginAt | date:'short' }}</td>
+                  <td>{{ client.lastLogoutAt | date:'short' }}</td>
+                  <td>
+                    <span class="status-badge active">Active</span>
+                  </td>
+                  <td class="actions">
+                    <button class="btn-icon" (click)="viewClientDetails(client)" title="View Details">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon" (click)="openUpdateModal(client)" title="Edit Client">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete" (click)="deleteClient(client.userId)" title="Delete Client">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div *ngIf="viewMode === 'card'" class="card-grid">
+            <app-client-card 
+              *ngFor="let client of clients" 
+              [client]="client"
+              (view)="viewClientDetails($event)"
+              (edit)="openUpdateModal($event)"
+              (delete)="deleteClient($event)">
+            </app-client-card>
+          </div>
+          
+          <ng-template #noClients>
+            <div class="empty-state">
+              <i class="fas fa-users"></i>
+              <h3>No clients found</h3>
+              <p>Add your first client to get started</p>
+              <button class="btn-primary" (click)="openCreateModal()">Add Client</button>
+            </div>
+          </ng-template>
+        </div>
+        
+        <div class="card-footer" *ngIf="clients.length > 0">
+          <div class="pagination">
+            <button class="btn-icon" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+            <span class="page-info">Page 1 of 1</span>
+            <button class="btn-icon" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="page-size">
+            <span>Show:</span>
+            <select>
+              <option>10</option>
+              <option>25</option>
+              <option>50</option>
+            </select>
+            <span>entries</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  
-  <div class="modal" *ngIf="showUpdateModal">
-    <div class="modal-content">
-      <span class="close" (click)="closeModal()">&times;</span>
-      <h2>Update Client</h2>
-      <form (ngSubmit)="updateClient()">
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
-  
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
-  
-        <label for="email">Email:</label>
-        <input type="email" id="email" [(ngModel)]="selectedClient.email" name="email" required>
-  
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
-  
-        <button type="submit">Update</button>
-      </form>
-    </div>
-  </div>
-  
+
+  <!-- Create Client Modal -->
   <div class="modal" *ngIf="showCreateModal">
+    <div class="modal-backdrop" (click)="closeModal()"></div>
     <div class="modal-content">
-      <span class="close" (click)="closeModal()">&times;</span>
-      <h2>Create User</h2>
-      <form (ngSubmit)="createUser()">
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
-  
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
-  
-        <label for="email">Email:</label>
-        <input type="email" id="email" [(ngModel)]="selectedClient.email" name="email" required>
-  
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="text" id="phoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
-  
-        <label for="password">Password:</label>
-        <input type="password" id="password" [(ngModel)]="selectedClient.password" name="password" required>
-  
-        <button type="submit">Create</button>
-      </form>
+      <div class="modal-header">
+        <h2>Add New Client</h2>
+        <button class="btn-close" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createUser()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" [(ngModel)]="selectedClient.email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" id="phoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" [(ngModel)]="selectedClient.password" name="password" required>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Create Client</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+
+  <div class="modal" *ngIf="showUpdateModal">
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Update Client</h2>
+        <button class="btn-close" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="updateClient()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="updateFirstName">First Name</label>
+              <input type="text" id="updateFirstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="updateLastName">Last Name</label>
+              <input type="text" id="updateLastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="updateEmail">Email Address</label>
+            <input type="email" id="updateEmail" [(ngModel)]="selectedClient.email" name="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="updatePhoneNumber">Phone Number</label>
+            <input type="text" id="updatePhoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Update Client</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

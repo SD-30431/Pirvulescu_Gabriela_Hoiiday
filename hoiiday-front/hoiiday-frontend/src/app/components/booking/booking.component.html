@@ -1,0 +1,60 @@
+<h1>Book Your Stay</h1>
+
+<form (ngSubmit)="submitBooking()">
+  <div *ngIf="property; else loadingTpl">
+    <p><strong>Property:</strong> {{ property.name }}</p>
+
+    <label for="roomType">Room type:</label>
+    <select id="roomType"
+            [(ngModel)]="selectedType"
+            name="roomType"
+            required>
+      <option *ngFor="let r of property.propertyRooms"
+              [value]="r.roomType">
+        {{ r.roomType | titlecase }} ({{ r.qtyTotal }} left)
+      </option>
+    </select>
+
+    <div>
+      <label for="checkIn">Check-in:</label>
+      <input id="checkIn"
+             type="date"
+             [(ngModel)]="checkInDate"
+             name="from"
+             required>
+    </div>
+
+    <div>
+      <label for="checkOut">Check-out:</label>
+      <input id="checkOut"
+             type="date"
+             [(ngModel)]="checkOutDate"
+             name="to"
+             required>
+    </div>
+
+    <div>
+      <label for="rooms"># of rooms:</label>
+      <input id="rooms"
+             type="number"
+             min="1"
+             [(ngModel)]="rooms"
+             name="rooms"
+             required>
+    </div>
+
+    <div *ngIf="!isLoggedIn" class="error">
+      You must be logged in to book
+    </div>
+
+    <button type="submit"
+            [disabled]="!isLoggedIn">
+      Confirm Booking
+    </button>
+    <button type="button" (click)="cancel()">Cancel</button>
+  </div>
+
+  <ng-template #loadingTpl>
+    <p>Loading booking form…</p>
+  </ng-template>
+</form>

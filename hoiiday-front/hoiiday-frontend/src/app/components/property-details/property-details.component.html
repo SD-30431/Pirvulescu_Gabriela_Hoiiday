@@ -1,0 +1,55 @@
+<!-- property-details.component.html -->
+<div class="property-details-container">
+  <!-- Error message display -->
+  <div class="error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading spinner -->
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading property details...</p>
+  </div>
+
+  <!-- Property content -->
+  <div class="property-content" *ngIf="property && !loading">
+    <h2>{{ property.name }}</h2>
+    
+    <div class="property-images" *ngIf="property.imageUrls && property.imageUrls.length">
+      <img [src]="property.imageUrls[0]" alt="{{ property.name }}">
+    </div>
+    
+    <div class="property-info">
+      <p class="property-description">{{ property.description }}</p>
+      
+      <div class="property-metadata">
+        <p><strong>Location:</strong> {{ property.location.city }}, {{ property.location.country }}</p>
+        <p><strong>Max Guests:</strong> {{ property.maxGuests }}</p>
+        <p><strong>Base Price:</strong> ${{ property.propertyId *50}}</p>
+      </div>
+      
+      <!-- Rooms listing section -->
+      <div class="rooms-section">
+        <h3>Available Rooms</h3>
+        <div class="room-card" *ngFor="let room of property.propertyRooms">
+          <div class="room-header">
+            <!-- you can prettify the enum e.g. SINGLE → "Single Room" -->
+            <h4>{{ room.roomType | titlecase }} Room</h4>
+            <span class="room-price">${{ room.price }}/night</span>
+          </div>
+          <div class="room-features">
+            <p><strong>Total rooms:</strong> {{ room.qtyTotal }}</p>
+            <!-- if you also stored size/maxOccupancy, show them here -->
+          </div>
+          
+          <button (click)="goToBooking()">Book Now</button>
+
+        </div>
+      </div>
+      <button class="btn-export" (click)="generatePdf()">
+        📄 Export rooms to PDF
+      </button>
+      <button class="btn-back" (click)="goBack()">Back to Properties</button>
+    </div>
+  </div>
+</div>

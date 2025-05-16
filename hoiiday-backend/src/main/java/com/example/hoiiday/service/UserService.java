@@ -13,5 +13,7 @@ public interface UserService {
     UserDTO updateUser(Long userId, UserDTO userDTO);
     void deleteUser(Long userId);
     User findUserByEmail(String email);
+    User save(User user);
+    User getUserEntityById(Long userId);
 
 }

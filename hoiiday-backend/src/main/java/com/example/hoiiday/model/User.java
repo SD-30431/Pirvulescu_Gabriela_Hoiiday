@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "Users")
@@ -47,9 +48,22 @@ public class User {
     private Admin admin;
 
     @OneToMany(mappedBy = "user")
-    private List<Bookings> bookings;
+    private List<Booking> bookings;
 
-    public User(Long userId, String password, UserRole role, String firstName, String lastName, String email, String phoneNumber) {
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
+    @Column(name = "last_logout_at")
+    private LocalDateTime lastLogoutAt;
+
+    public void markLogin() {
+        this.lastLoginAt = LocalDateTime.now();
+    }
+    public void markLogout() {
+        this.lastLogoutAt = LocalDateTime.now();
+    }
+
+    public User(Long userId, String password, UserRole role, String firstName, String lastName, String email, String phoneNumber, LocalDateTime lastLoginAt, LocalDateTime lastLogoutAt) {
         this.userId = userId;
         this.password = password;
         this.role = role;
@@ -58,6 +72,8 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.createdDate = LocalDate.now();
+        this.lastLoginAt = lastLoginAt;
+        this.lastLogoutAt = lastLogoutAt;
     }
 
 }

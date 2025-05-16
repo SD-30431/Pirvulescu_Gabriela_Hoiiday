@@ -1,27 +1,29 @@
 package com.example.hoiiday.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
-
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Table( name = "property_availability")
+@Table(name = "property_availability")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PropertyAvailability {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "availability_id")
     private Long availabilityId;
 
     @ManyToOne
-    @JoinColumn(name = "property_id")
+    @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    @Column(name = "start_date")
-    private Date startDate;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Column(name = "end_date")
-    private Date end_date;
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
 }
-

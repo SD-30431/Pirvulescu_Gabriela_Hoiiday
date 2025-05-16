@@ -1,62 +1,186 @@
-header {
+/* navbar.component.css */
+.navbar {
+  background-color: white;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
   display: flex;
-  justify-content: space-between; /* Align items with space between them */
-  align-items: center; /* Vertically align items in the center */
-  gap: 1rem;
-  width: 90%;
-  max-width: 50rem;
-  margin: 0 auto 2rem auto;
-  text-align: center;
-  background: linear-gradient(to bottom, #2c0a4c, #450d80);
-  padding: 1rem;
-  border-bottom-right-radius: 12px;
-  border-bottom-left-radius: 12px;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  justify-content: space-between;
+  align-items: center;
 }
 
-header > div {
+.logo-container {
   display: flex;
-  align-items: center; /* Align h1 and button vertically */
-  gap: 1rem; /* Adjust gap between h1 and button */
+  align-items: center;
+  cursor: pointer;
 }
 
-img {
-  width: 3.5rem;
-  object-fit: contain;
+.logo-container img {
+  height: 40px;
+  margin-right: 8px;
 }
 
-h1 {
-  font-size: 1.25rem;
+.logo-container h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
   margin: 0;
-  padding: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-links a {
+  font-size: 16px;
+  color: #555;
+  text-decoration: none;
+  padding-bottom: 4px;
+  position: relative;
+}
+
+.nav-links a.active {
+  color: #3498db;
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #3498db;
+}
+
+.nav-links a:hover {
+  color: #3498db;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .login-button {
-  background-color: #8bddb4;
-  color: #194d30;
+  background-color: #3498db;
+  color: white;
   border: none;
-  padding: 0.5rem 1rem;
   border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
 .login-button:hover {
-  background-color: #a0e0c8;
+  background-color: #2980b9;
 }
 
-@media (min-width: 768px) {
-  header {
-    padding: 2rem;
-  }
+/* User dropdown styles */
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
 
-  img {
-    width: 4.5rem;
-  }
+.user-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  gap: 8px;
+}
 
-  h1 {
-    font-size: 1.5rem;
-    margin: 0;
-    padding: 0;
+.user-button:hover {
+  background-color: #f5f5f5;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-name {
+  font-size: 15px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  padding: 8px 0;
+  margin-top: 8px;
+  display: none;
+  z-index: 10;
+}
+
+.user-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 8px 0;
+}
+
+.logout-option {
+  color: #e74c3c !important;
+  cursor: pointer;
+}
+
+.logout-option:hover {
+  background-color: #feeced !important;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* Hide on mobile, you could implement a mobile menu instead */
+  }
+  
+  .user-name {
+    display: none; /* Hide name on smaller screens to save space */
   }
 }

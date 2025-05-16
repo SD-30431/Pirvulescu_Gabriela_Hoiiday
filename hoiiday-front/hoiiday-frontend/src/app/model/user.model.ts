@@ -8,7 +8,9 @@ export class User {
         public email: string,
         public phoneNumber: string,
         public role: Role,
-        public password?:string
+        public password?:string,
+        public lastLoginAt?: string,
+        public lastLogoutAt?: string,
     ){}
 }
 

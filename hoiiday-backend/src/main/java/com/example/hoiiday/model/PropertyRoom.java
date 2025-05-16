@@ -1,26 +1,32 @@
 package com.example.hoiiday.model;
 
+import com.example.hoiiday.model.enums.RoomType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "property_room")
 public class PropertyRoom {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "property_room_id")
-    private Long propertyRoomId;
-
-    @ManyToOne
-    @JoinColumn(name = "property_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(nullable = false)
     private Property property;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
 
-    @Column(name = "no_of_rooms")
-    private int numberOfRooms;
+    private int qtyTotal;
+    private BigDecimal price;
 }
 
 
