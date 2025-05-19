@@ -1,60 +1,184 @@
-<h1>Book Your Stay</h1>
-
-<form (ngSubmit)="submitBooking()">
-  <div *ngIf="property; else loadingTpl">
-    <p><strong>Property:</strong> {{ property.name }}</p>
-
-    <label for="roomType">Room type:</label>
-    <select id="roomType"
-            [(ngModel)]="selectedType"
-            name="roomType"
-            required>
-      <option *ngFor="let r of property.propertyRooms"
-              [value]="r.roomType">
-        {{ r.roomType | titlecase }} ({{ r.qtyTotal }} left)
-      </option>
-    </select>
-
-    <div>
-      <label for="checkIn">Check-in:</label>
-      <input id="checkIn"
-             type="date"
-             [(ngModel)]="checkInDate"
-             name="from"
-             required>
-    </div>
-
-    <div>
-      <label for="checkOut">Check-out:</label>
-      <input id="checkOut"
-             type="date"
-             [(ngModel)]="checkOutDate"
-             name="to"
-             required>
-    </div>
-
-    <div>
-      <label for="rooms"># of rooms:</label>
-      <input id="rooms"
-             type="number"
-             min="1"
-             [(ngModel)]="rooms"
-             name="rooms"
-             required>
-    </div>
-
-    <div *ngIf="!isLoggedIn" class="error">
-      You must be logged in to book
-    </div>
-
-    <button type="submit"
-            [disabled]="!isLoggedIn">
-      Confirm Booking
+<div class="booking-container">
+  <div class="booking-header">
+    <h1>Book Your Stay</h1>
+    <button class="btn-back" (click)="cancel()">
+      <i class="fas fa-arrow-left"></i> Back to Property
     </button>
-    <button type="button" (click)="cancel()">Cancel</button>
   </div>
 
-  <ng-template #loadingTpl>
-    <p>Loading booking form…</p>
-  </ng-template>
-</form>
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading booking details...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && property" class="booking-content">
+    <div class="booking-form-container">
+      <div class="property-summary">
+        <h2>{{ property.name }}</h2>
+        <p class="property-location">
+          <i class="fas fa-map-marker-alt"></i> {{ property.location.city }}, {{ property.location.country }}
+        </p>
+      </div>
+
+      <form (ngSubmit)="submitBooking()" class="booking-form">
+        <div class="form-section">
+          <h3>Room Selection</h3>
+          
+          <div class="form-group">
+            <label for="roomType">Room Type</label>
+            <select 
+              id="roomType" 
+              name="roomType" 
+              [(ngModel)]="selectedRoomType" 
+              (change)="onRoomTypeChange()" 
+              required
+              [disabled]="availableRoomTypes.length === 0"
+            >
+              <option *ngFor="let room of availableRoomTypes" [value]="room.roomType">
+                {{ formatRoomType(room.roomType) }} - ${{ room.price }}/night ({{ room.qtyTotal }} available)
+              </option>
+              <option *ngIf="availableRoomTypes.length === 0" [value]="">No rooms available</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="roomsCount">Number of Rooms</label>
+            <input 
+              type="number" 
+              id="roomsCount" 
+              name="roomsCount" 
+              [(ngModel)]="roomsCount" 
+              (change)="onRoomsCountChange()" 
+              min="1" 
+              [max]="maxRoomsAvailable" 
+              required
+              [disabled]="maxRoomsAvailable === 0"
+            >
+            <small *ngIf="maxRoomsAvailable > 0">Maximum {{ maxRoomsAvailable }} rooms available</small>
+        </div>
+
+        <div class="form-section">
+          <h3>Dates</h3>
+          
+          <div class="date-inputs">
+            <div class="form-group">
+              <label for="checkInDate">Check-in Date</label>
+              <input 
+                type="date" 
+                id="checkInDate" 
+                name="checkInDate" 
+                [(ngModel)]="checkInDate" 
+                (change)="onDateChange()" 
+                [min]="minDate" 
+                required
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="checkOutDate">Check-out Date</label>
+              <input 
+                type="date" 
+                id="checkOutDate" 
+                name="checkOutDate" 
+                [(ngModel)]="checkOutDate" 
+                (change)="onDateChange()" 
+                [min]="checkInDate || minDate" 
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoggedIn" class="login-required">
+          <i class="fas fa-exclamation-circle"></i>
+          <p>You must be <a [routerLink]="['/login']" [queryParams]="{returnUrl: '/booking/' + propertyId}">logged in</a> to complete your booking</p>
+        </div>
+
+        <div class="booking-actions">
+          <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+          <button
+            type="button"
+            class="btn-generate-xml"
+            (click)="generateXmlBookingDetails()"
+            [disabled]="nightsCount <= 0 || maxRoomsAvailable === 0"
+          >
+            Generate XML
+          </button>
+          <button
+            type="submit"
+            class="btn-book"
+            [disabled]="!isLoggedIn || processingBooking || nightsCount <= 0 || maxRoomsAvailable === 0"
+          >
+            <span *ngIf="!processingBooking">Complete Booking</span>
+            <span *ngIf="processingBooking">
+              <div class="spinner-small"></div> Processing...
+            </span>
+          </button>
+        </div>
+
+    <div class="booking-summary">
+      <h3>Booking Summary</h3>
+      
+      <div class="summary-content">
+        <div class="summary-item">
+          <span>Property:</span>
+          <span>{{ property.name }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Room Type:</span>
+          <span>{{ selectedRoom ? formatRoomType(selectedRoomType) : 'Not selected' }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Number of Rooms:</span>
+          <span>{{ roomsCount }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Check-in:</span>
+          <span>{{ checkInDate ? (checkInDate | date:'mediumDate') : 'Not selected' }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Check-out:</span>
+          <span>{{ checkOutDate ? (checkOutDate | date:'mediumDate') : 'Not selected' }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Length of Stay:</span>
+          <span>{{ nightsCount }} night{{ nightsCount !== 1 ? 's' : '' }}</span>
+        </div>
+        
+        <div class="summary-divider"></div>
+        
+        <div class="summary-item">
+          <span>Room Price:</span>
+          <span>${{ roomPrice }}/night</span>
+        </div>
+        
+        <div class="summary-calculation">
+          <span>${{ roomPrice }} × {{ nightsCount }} night{{ nightsCount !== 1 ? 's' : '' }} × {{ roomsCount }} room{{ roomsCount !== 1 ? 's' : '' }}</span>
+        </div>
+        
+        <div class="summary-total">
+          <span>Total Price:</span>
+          <span>${{ totalPrice }}</span>
+        </div>
+      </div>
+      
+      <div class="booking-policies">
+        <h4>Booking Policies</h4>
+        <ul>
+          <li>Free cancellation up to 48 hours before check-in</li>
+          <li>Check-in time: 3:00 PM</li>
+          <li>Check-out time: 11:00 AM</li>
+          <li>Payment will be processed upon confirmation</li>
+        </ul>
+      </div>
+    </div>
+  </div>

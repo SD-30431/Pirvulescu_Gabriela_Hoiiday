@@ -1,9 +1,8 @@
-// src/app/components/login/login.component.ts
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AuthService, LoginSuccessPayload } from '../../services/auth.service';
-import { Router }                         from '@angular/router';
-import { CommonModule }                   from '@angular/common';
-import { FormsModule }                    from '@angular/forms';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -13,11 +12,13 @@ import { FormsModule }                    from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  email      = '';
-  password   = '';
+  email = '';
+  password = '';
   rememberMe = false;
+  loading = false;
+  error = '';
 
-  @Output() close        = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
   @Output() loginSuccess = new EventEmitter<LoginSuccessPayload>();
 
   constructor(
@@ -26,6 +27,9 @@ export class LoginComponent {
   ) {}
 
   login() {
+    this.loading = true;
+    this.error = '';
+    
     this.auth.attemptLogin(this.email, this.password)
       .subscribe({
         next: payload => {
@@ -39,7 +43,11 @@ export class LoginComponent {
           this.close.emit();
         },
         error: err => {
-          alert(err.error?.message || 'Login failed');
+          this.error = err.error?.message || 'Login failed';
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
         }
       });
   }

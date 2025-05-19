@@ -46,42 +46,55 @@
 
 /* Search Form */
 .search-container {
-  background: white;
-  border-radius: 50px;
+  background: var(--search-bg);
+  border-radius: 100px;
   padding: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
+  box-shadow: var(--search-shadow);
+  max-width: 900px;
   margin: 0 auto;
+  border: 1px solid var(--border-color);
+  position: relative; /* Add this to establish a stacking context */
 }
 
 .search-form {
   display: flex;
   align-items: center;
+  position: relative; /* Add this */
+  z-index: 1; /* Add this to ensure form elements stack properly */
 }
 
 .search-input {
   flex: 1;
   padding: 0.5rem 1rem;
   position: relative;
+  z-index: 1; /* Ensure inputs are below the button */
 }
 
 .search-input label {
   display: block;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--secondary-text);
   margin-bottom: 0.25rem;
 }
 
 .search-input input {
-  width: 100%;
-  border: none;
+  width: 95%;
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
   font-size: 1rem;
-  color: #333;
+  color: var(--primary-text);
+  background-color: var(--input-bg);
   outline: none;
+  padding: 8px 10px;
+}
+
+.search-input input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(156, 100, 255, 0.2);
 }
 
 .search-button {
-  background: #4a148c;
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   border-radius: 50%;
@@ -92,6 +105,13 @@
   justify-content: center;
   cursor: pointer;
   margin-right: 0.5rem;
+  transition: background-color 0.2s ease;
+  position: relative; /* Add this */
+  z-index: 2; /* Add this to ensure button is above inputs */
+}
+
+.search-button:hover {
+  background: var(--accent-hover);
 }
 
 /* Main Container */
@@ -115,15 +135,16 @@
 .filters-sidebar {
   width: 250px;
   flex-shrink: 0;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   padding: 1.5rem;
   align-self: flex-start;
   position: sticky;
   top: 20px;
   max-height: calc(100vh - 60px);
   overflow-y: auto;
+  border: 1px solid var(--border-color);
 }
 
 .filters-header {
@@ -131,14 +152,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
 }
 
 .filters-header h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: #4a148c;
+  color: var(--accent-color);
 }
 
 .close-filters {
@@ -157,7 +178,7 @@
 .filter-group h4 {
   margin-bottom: 0.5rem;
   font-size: 1rem;
-  color: #333;
+  color: var(--primary-text);
 }
 
 .checkbox-group,
@@ -177,6 +198,7 @@
   gap: 0.5rem;
   font-size: 0.9rem;
   cursor: pointer;
+  color: var(--secondary-text);
 }
 
 .input-group {
@@ -188,8 +210,10 @@
 .input-group input {
   width: 60px;
   padding: 0.25rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--primary-text);
 }
 
 .filter-actions {
@@ -197,16 +221,35 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .btn-apply {
-  background: #4a148c;
+  background: var(--btn-primary-bg);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
+.btn-apply:hover {
+  background: var(--accent-hover);
+}
+
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--secondary-text);
+  transition: all 0.2s ease;
+}
+
+.btn-reset:hover {
+  background: rgba(156, 100, 255, 0.1);
+  border-color: var(--accent-color);
+}
 .btn-reset {
   background: none;
   border: 1px solid #ddd;
@@ -308,14 +351,15 @@
 .property-card {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: white;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
 }
 
 .property-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .property-image {
@@ -336,10 +380,11 @@
 .property-details h3 {
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
+  color: var(--primary-text);
 }
 
 .property-location {
-  color: #666;
+  color: var(--secondary-text);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
@@ -348,6 +393,7 @@
   margin-bottom: 1rem;
   font-size: 0.9rem;
   line-height: 1.4;
+  color: var(--secondary-text);
 }
 
 .property-actions {
@@ -357,12 +403,17 @@
 
 .btn-view {
   flex: 1;
-  background: none;
-  border: 1px solid #4a148c;
-  color: #4a148c;
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
   padding: 0.5rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-view:hover {
+  background: rgba(156, 100, 255, 0.1);
 }
 
 .btn-book {
@@ -393,26 +444,45 @@
     font-size: 2rem;
   }
   
-  .search-form {
+.search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+
+.search-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    position: relative;
+  }
+  
+.search-input label {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+  
+
+.search-button {
+  background: #4a148c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.content-container {
     flex-direction: column;
-    gap: 0.5rem;
   }
 
-  .search-input {
-    width: 100%;
-  }
-
-  .search-button {
-    margin-top: 0.5rem;
-    width: 100%;
-    border-radius: 25px;
-  }
-
-  .content-container {
-    flex-direction: column;
-  }
-
-  .filters-sidebar {
+.filters-sidebar {
     width: 100%;
     position: fixed;
     top: 0;
@@ -425,23 +495,23 @@
     transition: transform 0.3s ease;
   }
 
-  .filters-sidebar.show-filters {
+.filters-sidebar.show-filters {
     transform: translateX(0);
   }
 
-  .close-filters {
+.close-filters {
     display: block;
   }
 
-  .filter-toggle-mobile {
+.filter-toggle-mobile {
     display: flex;
   }
 
-  .property-grid {
+.property-grid {
     grid-template-columns: 1fr;
   }
 
-  .listings-header {
+.listings-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;

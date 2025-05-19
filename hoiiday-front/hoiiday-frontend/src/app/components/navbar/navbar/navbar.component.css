@@ -183,4 +183,76 @@
   .user-name {
     display: none; /* Hide name on smaller screens to save space */
   }
+}/* Fixing the navbar styles for dark mode */
+.navbar {
+  background-color: white;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark mode specific navbar styles */
+:host-context(body.dark-mode) .navbar {
+  background-color: #19072e;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-mode) .logo-container h1 {
+  color: #e0e0e0;
+}
+
+:host-context(body.dark-mode) .nav-links a {
+  color: #b0b0b0;
+}
+
+:host-context(body.dark-mode) .nav-links a.active {
+  color: #64b5f6;
+}
+
+:host-context(body.dark-mode) .nav-links a.active::after {
+  background-color: #64b5f6;
+}
+
+:host-context(body.dark-mode) .nav-links a:hover {
+  color: #64b5f6;
+}
+
+:host-context(body.dark-mode) .login-button {
+  background-color: #7b1fa2;
+}
+
+:host-context(body.dark-mode) .login-button:hover {
+  background-color: #9c27b0;
+}
+
+:host-context(body.dark-mode) .user-button:hover {
+  background-color: #1e1e1e;
+}
+
+:host-context(body.dark-mode) .user-name {
+  color: #e0e0e0;
+}
+
+:host-context(body.dark-mode) .dropdown-menu {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-mode) .dropdown-menu a {
+  color: #e0e0e0;
+}
+
+:host-context(body.dark-mode) .dropdown-menu a:hover {
+  background-color: #2d2d2d;
+}
+
+:host-context(body.dark-mode) .dropdown-divider {
+  background-color: #444;
+}
+
+:host-context(body.dark-mode) .logout-option:hover {
+  background-color: rgba(231, 76, 60, 0.2) !important;
 }

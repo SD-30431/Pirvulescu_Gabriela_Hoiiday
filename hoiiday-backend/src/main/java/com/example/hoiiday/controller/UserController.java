@@ -2,6 +2,7 @@ package com.example.hoiiday.controller;
 
 import com.example.hoiiday.DTO.UserDTO;
 import com.example.hoiiday.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createStudent(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createStudent(@Valid @RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -39,7 +40,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId,
-                                              @RequestBody UserDTO userDTO) {
+                                              @Valid @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = userService.updateUser(userId, userDTO);
         return ResponseEntity.ok(updatedUser);
     }

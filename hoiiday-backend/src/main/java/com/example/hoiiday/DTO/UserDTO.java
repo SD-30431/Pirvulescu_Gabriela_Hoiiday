@@ -1,6 +1,9 @@
 package com.example.hoiiday.DTO;
 
 import com.example.hoiiday.model.enums.UserRole;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +15,15 @@ public class UserDTO {
     private String password;
     private String firstName;
     private String lastName;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be a valid format and contain '@'")
     private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+            regexp = "\\d{10}",
+            message = "Phone number must consist of exactly 10 digits"
+    )
     private String phoneNumber;
     private UserRole role;
     private LocalDateTime lastLoginAt;

@@ -7,12 +7,13 @@ import { Observable, catchError, map, of } from "rxjs";
 })
 export class ChatService {
   private readonly API = 'http://localhost:8080/api/chat';
+  private readonly BASE = '/api/chat';
 
   constructor(private http: HttpClient) {}
 
   ask(prompt: string): Observable<string> {
     return this.http
-      .get(`${this.API}/ask`, {
+      .get(`${this.BASE}/ask`, {
         params: { prompt },
         responseType: 'text' 
       })

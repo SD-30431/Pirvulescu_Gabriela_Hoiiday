@@ -3,6 +3,7 @@ package com.example.hoiiday.controller;
 import com.example.hoiiday.DTO.PropertyDTO;
 import com.example.hoiiday.DTO.PropertyInsertDTO;
 import com.example.hoiiday.service.PropertyService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class PropertyController {
     }
 
     @GetMapping
+    @PermitAll
     public ResponseEntity<List<PropertyDTO>> getAllProperties() {
         List<PropertyDTO> properties = propertyService.getAllProperties();
         return new ResponseEntity<>(properties, HttpStatus.OK);

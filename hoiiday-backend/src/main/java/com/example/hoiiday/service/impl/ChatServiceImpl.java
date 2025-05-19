@@ -17,8 +17,8 @@ public class ChatServiceImpl implements ChatService {
     private final WebClient webClient;
     private final String apiKey;
 
-    public ChatServiceImpl(WebClient.Builder builder, @Value("${openai.api.key}") String apiKey) {
-        this.apiKey = apiKey;
+    public ChatServiceImpl(WebClient.Builder builder) {
+        this.apiKey = "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";
         this.webClient = builder
                 .baseUrl("https://api.openai.com")
                 .build();

@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 public class LoginResponseDTO {
     private boolean success;
     private String message;
+    private String token;
+    private Long userId;
     private UserRole role;
     private String firstName;
     private String lastName;

@@ -1,19 +1,125 @@
+:root {
+  --primary-bg: #b3eeb8; /* Very light green background */
+  --secondary-bg: #c8e6c9; /* Slightly darker light green */
+  --tertiary-bg: #a5d6a7; /* Even darker light green for contrast */
+  --primary-text: #2c3e50;
+  --secondary-text: #555;
+  --border-color: #ddd;
+  --accent-color: #3498db;
+  --accent-hover: #2980b9;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --navbar-bg: #ffffff;
+  --navbar-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  --hero-overlay: rgba(0, 0, 0, 0.5);
+  --error-bg: #ffebee;
+  --error-text: #c62828;
+  --success-bg: #e8f5e9;
+  --success-text: #2e7d32;
+  --btn-primary-bg: #4a148c;
+  --btn-primary-text: #ffffff;
+  --search-bg: #ffffff;
+  --search-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --input-bg: #ffffff;
+  --filter-box-bg: #ffffff;
+}
 
-/* You can add global styles to this file, and also import other style files */
-* {
-    box-sizing: border-box;
-  }
-  
-  html {
-    height: 100%;
-  }
-  
-  body {
-    font-family: "Poppins", sans-serif;
-    background: radial-gradient(circle at top left, #c7e9ce, #b3dac3);
-    color: #c3b3d8;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
-  
+/* Dark mode variables - Updated with dark purple theme */
+body.dark-mode {
+  --primary-bg: #1a1625; /* Dark purple instead of pure black */
+  --secondary-bg: #241c31; /* Slightly lighter dark purple */
+  --tertiary-bg: #2d2438; /* Even lighter dark purple for contrast */
+  --primary-text: #e0e0e0;
+  --secondary-text: #b0b0b0;
+  --border-color: #3d3347; /* Subtle purple border */
+  --accent-color: #9c64ff; /* Lighter purple accent */
+  --accent-hover: #8a4fff;
+  --card-bg: #241c31; /* Card background slightly lighter than main bg */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --navbar-bg: #241c31;
+  --navbar-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  --hero-overlay: rgba(0, 0, 0, 0.7);
+  --error-bg: #4a1010;
+  --error-text: #ff8a80;
+  --success-bg: #1b3a1b;
+  --success-text: #81c784;
+  --btn-primary-bg: #7b1fa2;
+  --btn-primary-text: #ffffff;
+  --search-bg: #241c31; /* Slightly lighter than background */
+  --search-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --input-bg: #2d2438; /* Even lighter for input fields */
+  --filter-box-bg: #241c31; /* Slightly lighter for filter boxes */
+}
+
+/* Base dark mode styles that apply to the body */
+body.dark-mode {
+  background: var(--primary-bg);
+  color: var(--primary-text);
+}
+
+/* App container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+}
+
+/* Apply CSS variables to elements */
+.navbar {
+  background-color: var(--navbar-bg);
+  box-shadow: var(--navbar-shadow);
+}
+
+/* Updated search container for better dark mode appearance */
+.search-container {
+  background: var(--search-bg);
+  box-shadow: var(--search-shadow);
+}
+
+/* Fix for the black boxes in search inputs */
+.search-input input {
+  color: var(--primary-text);
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.search-input label {
+  color: var(--secondary-text);
+}
+
+/* Property cards with improved dark mode styling */
+.property-card {
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+}
+
+/* Filter sidebar improvements */
+.filters-sidebar {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.filter-option {
+  color: var(--primary-text);
+}
+
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+  accent-color: var(--accent-color);
+}
+
+/* Add smooth transition for theme switching */
+body, 
+body * {
+  transition: background-color 0.3s ease, 
+              color 0.3s ease, 
+              border-color 0.3s ease, 
+              box-shadow 0.3s ease;
+}

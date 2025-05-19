@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
+import { ChatToggleService } from '../../services/chat-toggle.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -10,16 +12,34 @@ import { ChatService } from '../../services/chat.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit, OnDestroy {
   history: { from: 'user'|'bot', text: string }[] = [];
   input = '';
   isOpen = false;
   isLoading = false;
+  private chatToggleSubscription!: Subscription;
 
-  constructor(private chat: ChatService) {}
+  constructor(
+    private chat: ChatService,
+    private chatToggleService: ChatToggleService
+  ) {}
+
+  ngOnInit(): void {
+    // Subscribe to the chat toggle service
+    this.chatToggleSubscription = this.chatToggleService.chatOpen$.subscribe(isOpen => {
+      this.isOpen = isOpen;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.chatToggleSubscription) {
+      this.chatToggleSubscription.unsubscribe();
+    }
+  }
 
   toggle() {
-    this.isOpen = !this.isOpen;
+    // Use the service to toggle the chat
+    this.chatToggleService.toggleChat();
   }
 
   send() {

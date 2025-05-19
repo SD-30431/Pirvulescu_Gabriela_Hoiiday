@@ -1,10 +1,12 @@
-import { Component, type OnInit } from "@angular/core"
-import { CommonModule } from "@angular/common"
+import { Component, Inject, PLATFORM_ID, type OnInit } from "@angular/core"
+import { CommonModule, isPlatformBrowser } from "@angular/common"
 import { FormsModule } from "@angular/forms"
 import type { Property } from "../../../model/property/property.model"
 import { PropertyService } from "../../../services/property.service"
 import { Router } from "@angular/router"
 import { LoginComponent } from "../../login/login.component";
+import { AuthService, LoginSuccessPayload } from "../../../services/auth.service"
+import { take } from "rxjs"
 
 @Component({
   selector: "app-client",
@@ -53,16 +55,33 @@ export class ClientComponent implements OnInit {
 
   constructor(
     private propertyService: PropertyService,
+    private authService: AuthService,
     private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    this.loadProperties()
-    this.checkLoginStatus()
+    // Only in browser do we read localStorage / AuthService
+    if (isPlatformBrowser(this.platformId)) {
+      this.authService
+        .isAuthenticated()
+        .pipe(take(1))
+        .subscribe((loggedIn) => {
+          this.isLoggedIn = loggedIn;
+          if (this.isLoggedIn) {
+            this.loadProperties();
+          }
+        });
+    }
   }
 
+
   checkLoginStatus(): void {
-    this.isLoggedIn = !!localStorage.getItem("authToken")
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoggedIn = !!localStorage.getItem("authToken");
+    } else {
+      this.isLoggedIn = false;
+    }
   }
 
   loadProperties(): void {
@@ -83,99 +102,66 @@ export class ClientComponent implements OnInit {
   }
 
   searchProperties(): void {
-    this.loading = true
-    console.log("Searching properties with:", {
-      location: this.location,
-      checkInDate: this.checkInDate,
-      checkOutDate: this.checkOutDate,
-      guestCount: this.guestCount,
-      filters: this.filters,
-    })
-
-    // In a real application, you would send these filters to your backend
-    setTimeout(() => {
-      this.filteredProperties = this.properties.filter((property) => {
-        // Filter by location if provided
-        if (
-          this.location &&
-          !property.location.city.toLowerCase().includes(this.location.toLowerCase()) &&
-          !property.location.country.toLowerCase().includes(this.location.toLowerCase())
-        ) {
-          return false
+    this.filteredProperties = this.properties.filter((p) => {
+      if (this.location) {
+        const city = p.location.city.toLowerCase();
+        const country = p.location.country.toLowerCase();
+        if (!city.includes(this.location.toLowerCase()) && !country.includes(this.location.toLowerCase())) {
+          return false;
         }
-
-        // Filter by guest count
-        if (this.guestCount > property.maxGuests) {
-          return false
-        }
-
-        return true
-      })
-
-      this.applyFilters()
-      this.applySorting()
-      this.loading = false
-    }, 1000)
+      }
+      if (this.guestCount > p.maxGuests) {
+        return false;
+      }
+      return true;
+    });
+    this.applyFilters();
+    this.applySorting();
   }
 
   applyFilters(): void {
-    // Apply amenity filters, rating filters, etc.
     this.filteredProperties = this.properties.filter((property) => {
-      // Filter by location if provided
       if (
         this.location &&
         !property.location.city.toLowerCase().includes(this.location.toLowerCase()) &&
         !property.location.country.toLowerCase().includes(this.location.toLowerCase())
       ) {
-        return false
+        return false;
       }
-
-      // Filter by guest count
       if (this.filters.guestCount > property.maxGuests) {
-        return false
+        return false;
       }
-
-      // In a real app, you would check if the property has the selected amenities
-      // For now, we'll just simulate this
       if (this.filters.amenities.pool && !this.hasAmenity(property, "pool")) {
-        return false
+        return false;
       }
       if (this.filters.amenities.wifi && !this.hasAmenity(property, "wifi")) {
-        return false
+        return false;
       }
       if (this.filters.amenities.petFriendly && !this.hasAmenity(property, "petFriendly")) {
-        return false
+        return false;
       }
       if (this.filters.amenities.seaView && !this.hasAmenity(property, "seaView")) {
-        return false
+        return false;
       }
       if (this.filters.amenities.parking && !this.hasAmenity(property, "parking")) {
-        return false
+        return false;
       }
-
-      // Filter by rating
       if (this.filters.rating > 0 && this.getPropertyRating(property) < this.filters.rating) {
-        return false
+        return false;
       }
+      return true;
+    });
 
-      return true
-    })
-
-    this.applySorting()
+    this.applySorting();
   }
 
-  // Helper method to check if a property has a specific amenity
+  
   private hasAmenity(property: Property, amenity: string): boolean {
-    // In a real app, you would check the property's amenities
-    // For now, we'll return a random boolean
-    return Math.random() > 0.5
+    return Math.random() > 0.5;
   }
 
-  // Helper method to get a property's rating
   private getPropertyRating(property: Property): number {
-    // In a real app, you would get the actual rating
-    // For now, we'll return a random rating between 7 and 10
-    return 7 + Math.floor(Math.random() * 4)
+    return 7 + Math.floor(Math.random() * 4);
   }
 
   applySorting(): void {
@@ -203,14 +189,12 @@ export class ClientComponent implements OnInit {
     }
   }
 
-  // Helper method to get the lowest price from a property
   private getLowestPrice(property: Property): number {
-    // In a real app, you would get the actual price from the property
-    return property.propertyId * 100 // Just a placeholder
+    return property.propertyId * 100;
   }
 
   onSortChange(): void {
-    this.applySorting()
+    this.applySorting();
   }
 
   viewPropertyDetails(propertyId: number): void {
@@ -229,17 +213,26 @@ export class ClientComponent implements OnInit {
 
   closeLoginModal(): void {
     this.showLoginModal = false
-    this.selectedPropertyForBooking = null
   }
 
-  onLoginSuccess(): void {
-    this.showLoginModal = false
-    this.isLoggedIn = true
+  /**
+   * Called when <app-login> emits loginSuccess
+   * @param payload contains .token and any user info
+   */
+  onLoginSuccess(payload: LoginSuccessPayload): void {
+    // AuthService already stored the token
+    this.showLoginModal = false;
+    this.isLoggedIn = true;
+    // now that we're authenticated, load properties
+    this.loadProperties();
+
+    // If the user was mid-booking, continue:
     if (this.selectedPropertyForBooking) {
-      this.router.navigate(["/book", this.selectedPropertyForBooking.propertyId])
-      this.selectedPropertyForBooking = null
+      this.router.navigate(['/booking', this.selectedPropertyForBooking.propertyId]);
+      this.selectedPropertyForBooking = null;
     }
   }
+
 
   resetFilters(): void {
     this.filters = {

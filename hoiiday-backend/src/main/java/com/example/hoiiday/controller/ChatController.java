@@ -18,7 +18,21 @@ public class ChatController {
     }
 
     @GetMapping("/ask")
-    public Mono<ResponseEntity<String>> askChat(@RequestParam(required = true) String prompt) {
+    public Mono<ResponseEntity<String>> askChatGet(@RequestParam(required = true) String prompt) {
+        if (prompt == null || prompt.trim().isEmpty()) {
+            return Mono.just(ResponseEntity.badRequest().body("Prompt cannot be empty"));
+        }
+
+        return chatService.getChatGptResponse(prompt)
+                .map(ResponseEntity::ok)
+                .onErrorResume(e -> Mono.just(
+                        ResponseEntity.internalServerError().body("Error: " + e.getMessage())
+                ));
+    }
+
+    @PostMapping("/ask")
+    public Mono<ResponseEntity<String>> askChatPost(@RequestBody Map<String, String> requestBody) {
+        String prompt = requestBody.get("prompt");
         if (prompt == null || prompt.trim().isEmpty()) {
             return Mono.just(ResponseEntity.badRequest().body("Prompt cannot be empty"));
         }

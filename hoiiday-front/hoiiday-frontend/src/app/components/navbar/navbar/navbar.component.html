@@ -12,6 +12,7 @@
     </div>
 
     <div class="nav-actions">
+      <app-dark-mode-toggle></app-dark-mode-toggle>
       <ng-container *ngIf="!isLoggedIn; else userDetails">
         <button class="login-button" (click)="openLogin()">Log In</button>
       </ng-container>

@@ -74,14 +74,16 @@
                 class="btn-icon" 
                 [class.active]="viewMode === 'card'" 
                 (click)="setViewMode('card')" 
-                title="Card View">
+                title="Card View"
+              >
                 <i class="fas fa-th-large"></i>
               </button>
               <button 
                 class="btn-icon" 
                 [class.active]="viewMode === 'list'" 
                 (click)="setViewMode('list')" 
-                title="List View">
+                title="List View"
+              >
                 <i class="fas fa-list"></i>
               </button>
             </div>
@@ -114,9 +116,13 @@
               <tbody>
                 <tr *ngFor="let client of clients">
                   <td class="client-info">
-                    <div class="client-avatar">{{ client.firstName.charAt(0) }}{{ client.lastName.charAt(0) }}</div>
+                    <div class="client-avatar">
+                      {{ client.firstName.charAt(0) }}{{ client.lastName.charAt(0) }}
+                    </div>
                     <div>
-                      <span class="client-name">{{ client.firstName }} {{ client.lastName }}</span>
+                      <span class="client-name">
+                        {{ client.firstName }} {{ client.lastName }}
+                      </span>
                       <span class="client-id">ID: {{ client.userId }}</span>
                     </div>
                   </td>
@@ -142,15 +148,15 @@
               </tbody>
             </table>
           </div>
-          
+
           <div *ngIf="viewMode === 'card'" class="card-grid">
             <app-client-card 
               *ngFor="let client of clients" 
               [client]="client"
               (view)="viewClientDetails($event)"
               (edit)="openUpdateModal($event)"
-              (delete)="deleteClient($event)">
-            </app-client-card>
+              (delete)="deleteClient($event)"
+            ></app-client-card>
           </div>
           
           <ng-template #noClients>
@@ -194,42 +200,100 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="createUser()">
+        <form #createForm="ngForm" (ngSubmit)="createUser()">
           <div class="form-grid">
             <div class="form-group">
               <label for="firstName">First Name</label>
-              <input type="text" id="firstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                [(ngModel)]="selectedClient.firstName"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="lastName">Last Name</label>
-              <input type="text" id="lastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                [(ngModel)]="selectedClient.lastName"
+                required
+              />
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" [(ngModel)]="selectedClient.email" name="email" required>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="selectedClient.email"
+              required
+              email
+              #emailModel="ngModel"
+            />
+            <div class="text-danger small"
+                 *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)">
+              <div *ngIf="emailModel.errors?.['required']">Email is required.</div>
+              <div *ngIf="emailModel.errors?.['email']">
+                Must be a valid email (contain “&#64;”).
+              </div>
+            </div>
           </div>
-          
+
           <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
+            <input
+              type="text"
+              id="phoneNumber"
+              name="phoneNumber"
+              [(ngModel)]="selectedClient.phoneNumber"
+              required
+              minlength="10"
+              maxlength="10"
+              pattern="^[0-9]{10}$"
+              #phoneModel="ngModel"
+            />
+            <div class="text-danger small"
+                 *ngIf="phoneModel.invalid && (phoneModel.dirty || phoneModel.touched)">
+              <div *ngIf="phoneModel.errors?.['required']">Phone is required.</div>
+              <div *ngIf="phoneModel.errors?.['minlength'] || phoneModel.errors?.['maxlength']">
+                Must be exactly 10 digits.
+              </div>
+              <div *ngIf="phoneModel.errors?.['pattern']">Only numeric digits allowed.</div>
+            </div>
           </div>
-          
+
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" [(ngModel)]="selectedClient.password" name="password" required>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              [(ngModel)]="selectedClient.password"
+              required
+            />
           </div>
-          
+
           <div class="modal-footer">
             <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
-            <button type="submit" class="btn-primary">Create Client</button>
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="createForm.invalid"
+            >
+              Create Client
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
+  <!-- Update Client Modal -->
   <div class="modal" *ngIf="showUpdateModal">
     <div class="modal-backdrop" (click)="closeModal()"></div>
     <div class="modal-content">
@@ -240,35 +304,85 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="updateClient()">
+        <form #updateForm="ngForm" (ngSubmit)="updateClient()">
           <div class="form-grid">
             <div class="form-group">
               <label for="updateFirstName">First Name</label>
-              <input type="text" id="updateFirstName" [(ngModel)]="selectedClient.firstName" name="firstName" required>
+              <input
+                type="text"
+                id="updateFirstName"
+                name="firstName"
+                [(ngModel)]="selectedClient.firstName"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="updateLastName">Last Name</label>
-              <input type="text" id="updateLastName" [(ngModel)]="selectedClient.lastName" name="lastName" required>
+              <input
+                type="text"
+                id="updateLastName"
+                name="lastName"
+                [(ngModel)]="selectedClient.lastName"
+                required
+              />
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="updateEmail">Email Address</label>
-            <input type="email" id="updateEmail" [(ngModel)]="selectedClient.email" name="email" required>
+            <input
+              type="email"
+              id="updateEmail"
+              name="email"
+              [(ngModel)]="selectedClient.email"
+              required
+              email
+              #updateEmailModel="ngModel"
+            />
+            <div class="text-danger small"
+                 *ngIf="updateEmailModel.invalid && (updateEmailModel.dirty || updateEmailModel.touched)">
+              <div *ngIf="updateEmailModel.errors?.['required']">Email is required.</div>
+              <div *ngIf="updateEmailModel.errors?.['email']">
+                Must be a valid email (contain “&#64;”).
+              </div>
+            </div>
           </div>
-          
+
           <div class="form-group">
             <label for="updatePhoneNumber">Phone Number</label>
-            <input type="text" id="updatePhoneNumber" [(ngModel)]="selectedClient.phoneNumber" name="phoneNumber" required>
+            <input
+              type="text"
+              id="updatePhoneNumber"
+              name="phoneNumber"
+              [(ngModel)]="selectedClient.phoneNumber"
+              required
+              minlength="10"
+              maxlength="10"
+              pattern="^[0-9]{10}$"
+              #updatePhoneModel="ngModel"
+            />
+            <div class="text-danger small"
+                 *ngIf="updatePhoneModel.invalid && (updatePhoneModel.dirty || updatePhoneModel.touched)">
+              <div *ngIf="updatePhoneModel.errors?.['required']">Phone is required.</div>
+              <div *ngIf="updatePhoneModel.errors?.['minlength'] || updatePhoneModel.errors?.['maxlength']">
+                Must be exactly 10 digits.
+              </div>
+              <div *ngIf="updatePhoneModel.errors?.['pattern']">Only numeric digits allowed.</div>
+            </div>
           </div>
-          
+
           <div class="modal-footer">
             <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
-            <button type="submit" class="btn-primary">Update Client</button>
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="updateForm.invalid"
+            >
+              Update Client
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
-

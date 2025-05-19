@@ -12,6 +12,7 @@ import com.example.hoiiday.model.PropertyRoom;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,13 +61,21 @@ public interface PropertyMapper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Converts saved image paths (e.g. "/uploads/xyz.jpg") into full URLs
+     * based on the current request context.
+     */
     @Named("propertyImagesToUrls")
     default List<String> propertyImagesToUrls(List<PropertyImages> list) {
         if (list == null) {
             return null;
         }
         return list.stream()
-                .map(PropertyImages::getImageUrl)
+                .map(pi -> ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path(pi.getImageUrl())
+                        .toUriString()
+                )
                 .collect(Collectors.toList());
     }
 

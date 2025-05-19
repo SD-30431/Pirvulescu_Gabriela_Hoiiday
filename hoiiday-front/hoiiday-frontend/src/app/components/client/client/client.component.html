@@ -139,4 +139,8 @@
 </div>
 
 <!-- Login Modal -->
-<app-login *ngIf="showLoginModal" (close)="closeLoginModal()" (loginSuccess)="onLoginSuccess()"></app-login>
+<app-login
+  *ngIf="showLoginModal"
+  (close)="closeLoginModal()"
+  (loginSuccess)="onLoginSuccess($event)"
+></app-login>

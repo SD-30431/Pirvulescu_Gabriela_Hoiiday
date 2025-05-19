@@ -1,19 +1,42 @@
 // src/app/app.config.ts
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideClientHydration }                from '@angular/platform-browser';
-import { provideServerRendering }                from '@angular/platform-server';
-import { provideServerRouting }                  from '@angular/ssr';
-import { provideRouter }                         from '@angular/router';
-import { routes }                                from './app.routes';          // ← import your routes
+
+import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import { provideClientHydration }             from '@angular/platform-browser';
+import { provideServerRendering }            from '@angular/platform-server';
+import { provideServerRouting }              from '@angular/ssr';
+import { provideRouter }                     from '@angular/router';
+import {
+  provideHttpClient,
+  withFetch,
+  withInterceptors
+} from '@angular/common/http';
+
+import { routes }       from './app.routes';
 import { serverRoutes } from './app.routes.server';
-import { provideHttpClient } from '@angular/common/http';
+import { DarkModeService } from './services/dark-mode.service';
+import { jwtInterceptor }  from './security/jwt.interceptor';
+
+export function initDarkModeFactory(darkModeService: DarkModeService) {
+  return () => Promise.resolve();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),        // ← REGISTER HttpClient
+    provideHttpClient(
+      withFetch(),                       // SSR → Fetch backend
+      withInterceptors([jwtInterceptor]) // our guarded interceptor
+    ),
+
     provideRouter(routes),
     provideServerRendering(),
     provideServerRouting(serverRoutes),
-    provideClientHydration()
+    provideClientHydration(),
+
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initDarkModeFactory,
+      deps: [DarkModeService],
+      multi: true
+    }
   ]
 };

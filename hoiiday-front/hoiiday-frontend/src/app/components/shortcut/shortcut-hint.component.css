@@ -1,0 +1,51 @@
+.shortcut-hints {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.shortcut-hints.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hint-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.hint-item:last-child {
+  margin-bottom: 0;
+}
+
+.key {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.hint-text {
+  margin-left: 5px;
+}
+
+:host-context(body.dark-mode) .shortcut-hints {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+}
+
+:host-context(body.dark-mode) .key {
+  background-color: rgba(0, 0, 0, 0.2);
+}

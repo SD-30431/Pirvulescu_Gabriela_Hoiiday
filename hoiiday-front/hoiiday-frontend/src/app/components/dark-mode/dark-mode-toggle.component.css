@@ -1,0 +1,30 @@
+.dark-mode-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #555;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .dark-mode-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark-mode-toggle.dark {
+    color: #b0b0b0;
+  }
+  
+  .dark-mode-toggle.dark:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* When using dark mode */
+  :host-context(body.dark-mode) .dark-mode-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
